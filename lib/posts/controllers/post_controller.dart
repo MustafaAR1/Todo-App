@@ -13,6 +13,7 @@ class PostController extends GetxController {
 
   int _limit = 10;
   RxBool hasMoreData = true.obs;
+
   void addToFavorites(num postId) {
     favoritePosts.add(postId);
   }

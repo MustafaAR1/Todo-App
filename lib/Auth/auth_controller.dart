@@ -1,19 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:get/get.dart';
+import 'package:todo_app/controllers/network_controller.dart';
 
 class AuthController extends GetxController {
-  Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  final NetworkController _networkController = Get.find<NetworkController>();
 
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+  Future<void> signInWithGoogle() async {
+    UserCredential _userCredential =
+        await _networkController.signInWithGoogle();
+    if (_userCredential.user != null) {
+      Get.offAllNamed('/posts');
+    }
   }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:todo_app/Auth/auth_controller.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final _authController = Get.find<AuthController>();
     return Scaffold(
       body: Center(
         child: Column(
@@ -19,8 +22,8 @@ class LoginView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Implement Google Sign-In logic
+              onPressed: () async {
+                await _authController.signInWithGoogle();
               },
               icon: Image.asset(
                 'assets/google_logo.png',
