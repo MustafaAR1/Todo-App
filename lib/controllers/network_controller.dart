@@ -21,6 +21,15 @@ class NetworkController extends GetxController {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  Future<bool> checkInternetConnection() async {
+    try {
+      final response = await dio.get('https://www.google.com');
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<PostModel?> getPost({int limit = 10, int skip = 10}) async {
     final response =
         await dio.get('https://dummyjson.com/posts?limit=$limit&skip=$skip');

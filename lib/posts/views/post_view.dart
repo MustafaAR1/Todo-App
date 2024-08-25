@@ -42,18 +42,20 @@ class _PostViewState extends State<PostView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
-        appBar: AppBar(title: const Text('Posts'), actions: [
+        appBar: AppBar(
+          backgroundColor: Colors.blueAccent,
+          title: const Text('Your Daily Posts',style: TextStyle(color: Colors.white),), actions: [
           IconButton(
-            icon: const Icon(Icons.add_outlined),
+            icon: const Icon(Icons.add_outlined,color: Colors.white,),
             onPressed: () {
               _addPostDialog(context);
             },
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline),
+            icon: const Icon(Icons.delete_outline,color: Colors.white,),
             onPressed: () {
               _postController.deleteAllPosts();
             },
@@ -77,47 +79,113 @@ class _PostViewState extends State<PostView> {
                   itemBuilder: (context, index) {
                     if (index < _postController.posts.length) {
                       Posts post = _postController.posts[index];
-                      return ListTile(
-                        title: Text(post.title!),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                _postController.posts.removeAt(index);
-                              },
-                            ),
-                            Obx(() => IconButton(
-                                  color: _postController.favoritePosts
-                                          .contains(post.id)
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  icon: const Icon(Icons.favorite_outline),
-                                  onPressed: () {
-                                    if (!_postController.favoritePosts
-                                        .contains(post.id!)) {
-                                      _postController.addToFavorites(post.id!);
-                                    } else {
-                                      _postController
-                                          .removeFromFavorites(post.id!);
-                                    }
-                                  },
-                                )),
-                          ],
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => PostDetailView(post: post),
-                          //   ),
-                          // );
-                        },
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          title: Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  post.title!,
+                                  style: const TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.w500),
+                                ),     Obx(() => IconButton(
+              color: _postController.favoritePosts.contains(post.id)
+                  ? Colors.red
+                  : Colors.grey,
+              icon: const Icon(Icons.favorite_outline),
+              onPressed: () {
+                if (!_postController.favoritePosts.contains(post.id!)) {
+                  _postController.addToFavorites(post.id!);
+                } else {
+                  _postController.removeFromFavorites(post.id!);
+                }
+              },
+            )),
+                              ],
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                             if(post.body!=null) Text(post.body!),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 6,
+                                children: post.tags
+                                        ?.map((tag) => Chip(
+                                              label: Text(tag,
+                                                  style: const TextStyle(
+                                                      fontSize: 12)),
+                                              backgroundColor:
+                                                   Colors.blueAccent,
+                                              labelStyle: const TextStyle(
+                                                  color: Colors.white),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 0),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                            ))
+                                        .toList() ??
+                                    [],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Total Views: ',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        post.views.toString(),
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  _bottomWidget(index, post),
+                                ],
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => PostDetailView(post: post),
+                            //   ),
+                            // );
+                          },
+                        ),
                       );
                     } else if (_postController.paginationLoader.value) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
+                      return const Padding(
+                        padding: EdgeInsets.only(bottom: 32, top: 32),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       );
                     }
                     return const SizedBox();
@@ -128,12 +196,27 @@ class _PostViewState extends State<PostView> {
     );
   }
 
+  Widget _bottomWidget(int index, Posts post) {
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            _postController.removePost(index,post.id!);
+          },
+        ),
+   
+      ],
+    );
+  }
+
   Future<dynamic> _addPostDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Add Post'),
+          
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
