@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo_app/Auth/auth_controller.dart';
+import 'package:todo_app/Auth/views/login_view.dart';
 import 'package:todo_app/controllers/database_controller.dart';
 import 'package:todo_app/controllers/network_controller.dart';
 import 'package:todo_app/posts/controllers/post_controller.dart';
@@ -40,7 +41,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(),
-      home: const PostView(),
+      home: const LoginView(),
     );
   }
 }

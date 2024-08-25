@@ -14,13 +14,21 @@ class LoginView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Welcome',
+              'Welcome To Post App',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 20),
+            Image.asset(
+                          'assets/post_asset.png',
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.fitHeight,
+                        ),
+                        const SizedBox(height: 35),
+            
             ElevatedButton.icon(
               onPressed: () async {
                 await _authController.signInWithGoogle();
